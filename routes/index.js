@@ -3,6 +3,13 @@ const router = express.Router();
 const loginRouter = require('./login');
 const dbModel = require('../model/modelTest.js');
 
+//multer는 사용하는 폴더마다 선언하는걸로..
+const multer = require('multer');
+const storage_ = multer.diskStorage({
+    destination : (req,file,cb) => cb(null,'images'),
+    filename    : (req,file,cb) => cb(null,Date.now() + '-' + file.originalname)
+})
+const upload = multer({storage : storage_})
 
 let user = {
     name : "bk",
@@ -31,10 +38,11 @@ router.get('/fail',(req,res) => {
 })
 
 // multer는 모듈화가 안되는듯하다..
-router.post('/multer',(req,res) => {
-    console.log("receive image");
+router.post('/multer',upload.single('singleImage'),(req,res) => {
     console.log(req.file);
+    console.log("이미지 받음");
 })
+
 
 
 router.get('/multer',(req,res) => {
